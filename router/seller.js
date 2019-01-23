@@ -15,7 +15,7 @@ module.exports = function () {
   // 获取商家信息
   router.post('/getSeller', function(req, res){
     let sellerId = req.body.sellerId
-    db.query(`select sellerId, sellerImg, storeName, goodsCode, serviceCode, transCode from liqi_taobao_seller where sellerId = '${sellerId}'`, (err, data) => {
+    db.query(`select sellerId, sellerImg, storeName, goodsCode, serviceCode, transCode, freightPrice from liqi_taobao_seller where sellerId = '${sellerId}'`, (err, data) => {
       if (err) {
         console.log(err)
         res.status(500).send("database query failure").end()

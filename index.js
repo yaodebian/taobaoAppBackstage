@@ -27,5 +27,7 @@ server.use('/checkCode/', require('./router/checkCode.js')())
 server.use('/search/', require('./router/search.js')())
 server.use('/seller/', require('./router/seller.js')())
 server.use('/cart/', require('./router/cart.js')())
+server.use('/address/', require('./router/address.js')())
+server.use('/order/', require('./router/order.js')())
 
 server.use(express_static('./static')) //其余所有访问默认丢给static目录

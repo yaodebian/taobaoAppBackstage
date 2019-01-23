@@ -49,7 +49,7 @@ module.exports = function () {
   router.get('/getCarts', function (req, res) {
     let obj = url.parse(req.url, true).query
     let userId = obj.userId
-    db.query(`select s.sellerId, s.storeName, s.sellerImg, c.cartCount, g.goodsId, g.sellerId, g.goodsName, g.goodsPrice, g.tags, g.column, g.img, g.discount, g.customers, g.location from liqi_taobao_cart c join liqi_taobao_goods g join liqi_taobao_seller s on c.userId='${userId}' and c.goodsId=g.goodsId and g.sellerId=s.sellerId`, (err, data) => {
+    db.query(`select s.sellerId, s.storeName, s.sellerImg, s.freightPrice, c.cartCount, g.goodsId, g.sellerId, g.goodsName, g.goodsPrice, g.tags, g.column, g.img, g.discount, g.customers, g.location from liqi_taobao_cart c join liqi_taobao_goods g join liqi_taobao_seller s on c.userId='${userId}' and c.goodsId=g.goodsId and g.sellerId=s.sellerId`, (err, data) => {
       if (err) {
         console.log(err)
         res.status(500).send("database query failure").end()
@@ -68,6 +68,7 @@ module.exports = function () {
         good.discount = item.discount
         good.customers = item.customers
         good.location = item.location
+        good.freightPrice = item.freightPrice
         return good
       }
       // 将数据push进result中
@@ -75,6 +76,7 @@ module.exports = function () {
         let temp = {}
         temp.sellerName = item.storeName
         temp.sellerImg = item.sellerImg
+        temp.freightPrice = item.freightPrice
         temp.cartCountNum = [item.cartCount]
         temp.list = [getGood(item)]
         result.push(temp)

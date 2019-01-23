@@ -16,6 +16,28 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`db_practice` /*!40100 DEFAULT CHARACTER
 
 USE `db_practice`;
 
+/*Table structure for table `liqi_taobao_address` */
+
+DROP TABLE IF EXISTS `liqi_taobao_address`;
+
+CREATE TABLE `liqi_taobao_address` (
+  `addressId` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '地址id',
+  `userId` bigint(20) unsigned zerofill NOT NULL COMMENT '用户id',
+  `receiver` varchar(10) NOT NULL COMMENT '收货人',
+  `tel` varchar(11) NOT NULL COMMENT '手机号',
+  `area` varchar(50) NOT NULL COMMENT '所在地区',
+  `detailAdd` varchar(50) NOT NULL COMMENT '详细地址',
+  `tagVal` varchar(50) NOT NULL COMMENT '地址标签',
+  `isDefault` tinyint(1) NOT NULL COMMENT '是否为默认地址',
+  PRIMARY KEY (`addressId`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `liqi_taobao_address_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `liqi_taobao_user` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+/*Data for the table `liqi_taobao_address` */
+
+insert  into `liqi_taobao_address`(`addressId`,`userId`,`receiver`,`tel`,`area`,`detailAdd`,`tagVal`,`isDefault`) values (00000000000000000006,00000000000000000003,'fdsfa','11111111111','福建 南平市 邵武市','福建 南平市 邵武市','公司',0),(00000000000000000007,00000000000000000003,'fdsfsfdsf','22222222222','福建 南平市 武夷山市','福建 南平市 武夷山市','学校',0),(00000000000000000008,00000000000000000003,'dfsfdsf','33333333333','内蒙古 呼伦贝尔市 新巴尔虎左旗','内蒙古 呼伦贝尔市 新巴尔虎左旗','',0),(00000000000000000009,00000000000000000003,'rgthj','11111111111','江西 吉安市 遂川县','dvfghgfdfgh','家',1),(00000000000000000010,00000000000000000014,'估计快','11111111111','辽宁 本溪市 明山区','/刚好近近景近景','家',1);
+
 /*Table structure for table `liqi_taobao_cart` */
 
 DROP TABLE IF EXISTS `liqi_taobao_cart`;
@@ -30,11 +52,11 @@ CREATE TABLE `liqi_taobao_cart` (
   KEY `userId` (`userId`),
   CONSTRAINT `liqi_taobao_cart_ibfk_1` FOREIGN KEY (`goodsId`) REFERENCES `liqi_taobao_goods` (`goodsId`),
   CONSTRAINT `liqi_taobao_cart_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `liqi_taobao_user` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=379 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=435 DEFAULT CHARSET=utf8;
 
 /*Data for the table `liqi_taobao_cart` */
 
-insert  into `liqi_taobao_cart`(`cartId`,`goodsId`,`userId`,`cartCount`) values (00000000000000000377,00000000000000000001,00000000000000000003,1),(00000000000000000378,00000000000000000009,00000000000000000003,1);
+insert  into `liqi_taobao_cart`(`cartId`,`goodsId`,`userId`,`cartCount`) values (00000000000000000429,00000000000000000001,00000000000000000003,1);
 
 /*Table structure for table `liqi_taobao_deal_record` */
 
@@ -91,6 +113,49 @@ CREATE TABLE `liqi_taobao_keywords` (
 
 insert  into `liqi_taobao_keywords`(`keyId`,`keyword`) values (00000000000000000001,'海贼王手办'),(00000000000000000002,'海尔官方旗舰店'),(00000000000000000003,'海藻面膜'),(00000000000000000004,'海鲜 水产 鲜活'),(00000000000000000005,'海蓝之谜'),(00000000000000000006,'海边度假套装 女夏 沙滩裙'),(00000000000000000007,'海苔'),(00000000000000000008,'海鲜'),(00000000000000000009,'海绵垫'),(00000000000000000010,'海贼王'),(00000000000000000011,'海边裙女');
 
+/*Table structure for table `liqi_taobao_order` */
+
+DROP TABLE IF EXISTS `liqi_taobao_order`;
+
+CREATE TABLE `liqi_taobao_order` (
+  `orderId` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '订单id',
+  `userId` bigint(20) unsigned zerofill NOT NULL COMMENT '用户id',
+  `addressId` bigint(20) unsigned zerofill NOT NULL COMMENT '地址id',
+  `totalAmount` varchar(10) NOT NULL COMMENT '订单总计',
+  `payPrice` varchar(10) NOT NULL COMMENT '运费险支付',
+  `getPrice` varchar(10) NOT NULL COMMENT '运费险偿还',
+  `msgtxt` varchar(50) NOT NULL COMMENT '买家留言',
+  `status` int(1) NOT NULL DEFAULT '1' COMMENT '订单状态：0表示待付款，1表示待发货，2表示待收货，3表示已收货，4表示待评价，5表示退款或者售后的订单',
+  `isFreight` tinyint(1) NOT NULL COMMENT '快递是否免运费',
+  PRIMARY KEY (`orderId`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `liqi_taobao_order_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `liqi_taobao_user` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+
+/*Data for the table `liqi_taobao_order` */
+
+insert  into `liqi_taobao_order`(`orderId`,`userId`,`addressId`,`totalAmount`,`payPrice`,`getPrice`,`msgtxt`,`status`,`isFreight`) values (00000000000000000027,00000000000000000003,00000000000000000009,'386','0.8','11','',2,0),(00000000000000000028,00000000000000000014,00000000000000000010,'792.8','0.8','11','',2,0),(00000000000000000029,00000000000000000014,00000000000000000010,'173.9','0.8','11','',1,0);
+
+/*Table structure for table `liqi_taobao_ordergood` */
+
+DROP TABLE IF EXISTS `liqi_taobao_ordergood`;
+
+CREATE TABLE `liqi_taobao_ordergood` (
+  `orderGoodId` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '订单涉及的商品记录id',
+  `orderId` bigint(20) unsigned zerofill NOT NULL COMMENT '订单id',
+  `goodsId` bigint(20) unsigned zerofill NOT NULL COMMENT '商品id',
+  `count` int(2) NOT NULL DEFAULT '1' COMMENT '商品数量',
+  PRIMARY KEY (`orderGoodId`),
+  KEY `orderId` (`orderId`),
+  KEY `goodsId` (`goodsId`),
+  CONSTRAINT `liqi_taobao_ordergood_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `liqi_taobao_order` (`orderId`),
+  CONSTRAINT `liqi_taobao_ordergood_ibfk_2` FOREIGN KEY (`goodsId`) REFERENCES `liqi_taobao_goods` (`goodsId`)
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
+
+/*Data for the table `liqi_taobao_ordergood` */
+
+insert  into `liqi_taobao_ordergood`(`orderGoodId`,`orderId`,`goodsId`,`count`) values (00000000000000000063,00000000000000000027,00000000000000000006,1),(00000000000000000065,00000000000000000027,00000000000000000009,1),(00000000000000000069,00000000000000000027,00000000000000000012,2),(00000000000000000071,00000000000000000029,00000000000000000001,1),(00000000000000000072,00000000000000000028,00000000000000000006,3),(00000000000000000073,00000000000000000028,00000000000000000009,1),(00000000000000000074,00000000000000000028,00000000000000000012,1),(00000000000000000075,00000000000000000029,00000000000000000011,4);
+
 /*Table structure for table `liqi_taobao_seller` */
 
 DROP TABLE IF EXISTS `liqi_taobao_seller`;
@@ -103,6 +168,7 @@ CREATE TABLE `liqi_taobao_seller` (
   `goodsCode` float NOT NULL COMMENT '宝贝描述',
   `serviceCode` float NOT NULL COMMENT '卖家服务',
   `transCode` float NOT NULL COMMENT '物流服务',
+  `freightPrice` int(3) DEFAULT '0' COMMENT '快递免邮最低消费',
   PRIMARY KEY (`sellerId`),
   KEY `userId` (`userId`),
   CONSTRAINT `liqi_taobao_seller_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `liqi_taobao_user` (`userId`)
@@ -110,7 +176,7 @@ CREATE TABLE `liqi_taobao_seller` (
 
 /*Data for the table `liqi_taobao_seller` */
 
-insert  into `liqi_taobao_seller`(`sellerId`,`userId`,`sellerImg`,`storeName`,`goodsCode`,`serviceCode`,`transCode`) values (00000000000000000001,00000000000000000002,'1.jpg','海迷の家',4.7,4.8,4.8),(00000000000000000002,00000000000000000003,'2.jpg','小哥哥',3.7,4,4);
+insert  into `liqi_taobao_seller`(`sellerId`,`userId`,`sellerImg`,`storeName`,`goodsCode`,`serviceCode`,`transCode`,`freightPrice`) values (00000000000000000001,00000000000000000002,'1.jpg','海迷の家',4.7,4.8,4.8,50),(00000000000000000002,00000000000000000003,'2.jpg','小哥哥',3.7,4,4,95);
 
 /*Table structure for table `liqi_taobao_user` */
 
@@ -124,11 +190,11 @@ CREATE TABLE `liqi_taobao_user` (
   `userImg` varchar(50) NOT NULL DEFAULT 'icon.svg' COMMENT '用户头像',
   `nick` varchar(20) NOT NULL DEFAULT '点击我设置昵称吧' COMMENT '用户昵称',
   PRIMARY KEY (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 /*Data for the table `liqi_taobao_user` */
 
-insert  into `liqi_taobao_user`(`userId`,`username`,`phone`,`password`,`userImg`,`nick`) values (00000000000000000001,'点击我设置你的登录名吧','44444444444',NULL,'icon.svg','点击我设置昵称'),(00000000000000000002,'点击我设置你的登录名吧','12345678900',NULL,'icon.svg','点击我设置昵称'),(00000000000000000003,'垚的彼岸','11111111111','123456Abc','icon.svg','yaodebian'),(00000000000000000004,'点击我设置你的登录名吧','99999999999',NULL,'icon.svg','点击我设置昵称'),(00000000000000000005,'点击我设置你的登录名吧','44444444444',NULL,'icon.svg','点击我设置昵称'),(00000000000000000006,'点击我设置你的登录名吧','55555555555',NULL,'icon.svg','点击我设置昵称'),(00000000000000000007,'点击我设置你的登录名吧','66666666666',NULL,'icon.svg','点击我设置昵称'),(00000000000000000008,'点击我设置你的登录名吧','77777777777',NULL,'icon.svg','点击我设置昵称'),(00000000000000000009,'点击我设置你的登录名吧','88888888888',NULL,'icon.svg','点击我设置昵称'),(00000000000000000010,'点击我设置你的登录名吧','12222222222',NULL,'icon.svg','点击我设置昵称'),(00000000000000000011,'点击我设置你的登录名吧','13333333333',NULL,'icon.svg','点击我设置昵称'),(00000000000000000012,'yaodebian','11111111111','Yaode123','icon.svg','垚的彼岸');
+insert  into `liqi_taobao_user`(`userId`,`username`,`phone`,`password`,`userImg`,`nick`) values (00000000000000000001,'点击我设置你的登录名吧','44444444444',NULL,'icon.svg','点击我设置昵称'),(00000000000000000002,'点击我设置你的登录名吧','12345678900',NULL,'icon.svg','点击我设置昵称'),(00000000000000000003,'垚的彼岸','11111111111','123456Abc','icon.svg','yaodebian'),(00000000000000000004,'点击我设置你的登录名吧','99999999999',NULL,'icon.svg','点击我设置昵称'),(00000000000000000005,'点击我设置你的登录名吧','44444444444',NULL,'icon.svg','点击我设置昵称'),(00000000000000000006,'点击我设置你的登录名吧','55555555555',NULL,'icon.svg','点击我设置昵称'),(00000000000000000007,'点击我设置你的登录名吧','66666666666',NULL,'icon.svg','点击我设置昵称'),(00000000000000000008,'点击我设置你的登录名吧','77777777777',NULL,'icon.svg','点击我设置昵称'),(00000000000000000009,'点击我设置你的登录名吧','88888888888',NULL,'icon.svg','点击我设置昵称'),(00000000000000000010,'点击我设置你的登录名吧','12222222222',NULL,'icon.svg','点击我设置昵称'),(00000000000000000011,'点击我设置你的登录名吧','13333333333',NULL,'icon.svg','点击我设置昵称'),(00000000000000000012,'yaodebian','11111111111','Yaode123','icon.svg','垚的彼岸'),(00000000000000000013,'点击我设置你的登录名吧','undefined',NULL,'icon.svg','点击我设置昵称吧'),(00000000000000000014,'yaode','undefined','123456Abc','icon.svg','点击我设置昵称吧');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

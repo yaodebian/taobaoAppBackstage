@@ -2,6 +2,7 @@ const express = require('express')
 const body_parser = require('body-parser')
 const db = require('../db/db')
 const cookieParser = require('cookie-parser')
+const session = require('express-session');
 
 module.exports = function () {
   let router = express.Router()
@@ -14,6 +15,15 @@ module.exports = function () {
   router.use(body_parser.json())
 
   router.use(cookieParser())
+
+  //session配置
+  router.use(session({
+    secret: 'yaodebiantaobao',
+    cookie: {
+      maxAge: 60 * 60 * 1000, // 1小时
+      httpOnly: false
+    }
+  }))
 
   // 注册
   router.post('/reg', function (req, res) {
@@ -30,9 +40,10 @@ module.exports = function () {
         res.status(500).send("database query failure").end()
       } else {
         let userId = data.insertId
-        res.cookie('phone', phone, {
-          maxAge: 1000 * 60 * 60 * 24
-        })
+        req.session.phone = phone
+        // res.cookie('phone', phone, {
+        //   maxAge: 1000 * 60 * 60
+        // })
         res.send({
           userId
         }).end()
@@ -44,18 +55,13 @@ module.exports = function () {
   // 登录
   router.post('/login', function (req, res) {
     let flag = req.body.flag
-    if (req.cookies.phone || flag) {
-      let phone
-      req.cookies.phone ? phone = req.cookies.phone : phone = req.body.phone
+    if (req.session.phone || flag) {
+      let phone = req.session.phone || req.body.phone
       db.query(`select * from liqi_taobao_user where phone = '${phone}'`, (err, data) => {
         if (err) {
           res.status(500).send("database query failure").end()
         } else {
-          if (!req.cookies.phone) {
-            res.cookie('phone', phone, {
-              maxAge: 1000 * 60
-            })
-          }
+          req.session.phone = data[0].phone
           let dataItem = data[0]
           res.send(dataItem).end()
         }
@@ -70,11 +76,7 @@ module.exports = function () {
           if (data.length == 0 || data[0].password != password) {
             res.send(false).end()
           } else {
-            if (!req.cookies.phone) {
-              res.cookie('phone', data[0].phone, {
-                maxAge: 1000 * 60
-              })
-            }
+            req.session.phone = data[0].phone
             let dataItem = data[0]
             res.send(dataItem).end()
           }
@@ -82,7 +84,7 @@ module.exports = function () {
       })
     }
   })
-
+  
   // 保存昵称
   router.post('/saveNick', function (req, res) {
     let userId = req.body.userId
